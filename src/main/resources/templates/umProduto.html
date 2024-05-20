@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos</title>
+    <style>
+        img {
+            idth: auto;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            flex-grow: 1;
+            align-self: center;
+
+        }
+        ul {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            list-style: none;
+            padding: 0;
+            max-height: 10%;
+            margin: 16%;
+        }
+
+        li {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+            height: 100%;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            transition: 0.3s;
+
+        }
+
+        li:hover {
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        }
+
+        h3 {
+            font-size: 20px; /
+            margin-top: auto;
+            margin-bottom: 10px;
+        }
+        h4 {
+            margin-top: 10px;
+            font-size: 23px;
+            margin-bottom: 10px;
+        }
+
+        .rating {
+            margin-top: 10px;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .rating i {
+            color: #FFD700;
+        }
+
+        .menu-lateral {
+            height: 100vh;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.3s;
+            padding-top: 60px;
+        }
+
+        .menu-lateral a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .menu-lateral .fecharbtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        .menu-lateral a:hover {
+            color: #f1f1f1;
+        }
+
+    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+<body>
+<h1>Fake Store API</h1>
+<div id="menuLateral" class="menu-lateral">
+    <a href="javascript:void(0)" class="fecharbtn" onclick="fecharMenu()">&times;</a>
+    <a href="/show">Todos os Itens</a>
+    <a href="/show/electronics">Electronics</a>
+    <a href="/show/jewelery">Jewelery</a>
+    <a href="/show/men">Men's Clothing</a>
+    <a href="/show/women">Women's Clothing</a>
+</div>
+
+<div id="menuIcon" style="font-size:30px;cursor:pointer;position:absolute;top:100px;transition:0.0s;">
+    <span onclick="abrirMenu()">&#9776; Menu</span>
+</div>
+
+<ul>
+    <li th:each="produto : ${produtos}">
+        <img th:src="${produto.image}" alt="Imagem do Produto">
+        <h3 th:text="${produto.title}"></h3>
+        <h4 th:text="${'R$: ' + produto.price}"></h4>
+        <div class="rating">
+            <!-- Estrelas de avaliação (mantido igual) -->
+            <i th:each="star:${#numbers.sequence(1, produto.rating.rate)}" class="fa fa-star"></i>
+            <i th:each="star:${#numbers.sequence(produto.rating.rate + 1, 5)}" class="fa fa-star-o"></i>
+            <span th:text="${produto.rating.count + ' avaliações'}"></span>
+        </div>
+    </li>
+    <div class="texto">
+        <h5 text="${produtos.description}"></h5>
+    </div>
+</ul>
+<script>
+    function abrirMenu() {
+        document.getElementById("menuLateral").style.width = "250px";
+    }
+
+    function fecharMenu() {
+        document.getElementById("menuLateral").style.width = "0";
+    }
+    window.onscroll = function() {
+        var menuIcon = document.getElementById("menuIcon");
+        if (window.pageYOffset > 100) {
+            menuIcon.style.position = "fixed";
+            menuIcon.style.top = "10px";
+        } else {
+            menuIcon.style.position = "absolute";
+            menuIcon.style.top = "100px";
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos</title>
+    <style>
+        /* Estilo para as imagens */
+        img {
+            width: auto; /* Largura automática para manter a proporção */
+            max-width: 100%; /* Largura máxima dentro do contêiner */
+            max-height: 100%; /* Altura máxima para a imagem */
+            object-fit: contain; /* Garante que a imagem seja contida dentro do espaço sem distorção */
+            flex-grow: 1; /* Permite que a imagem cresça para ocupar o espaço disponível */
+            align-self: center; /* Centraliza a imagem verticalmente dentro do item da grade */
+
+        }
+        ul {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 colunas por linha */
+            gap: 20px; /* Espaço entre os produtos */
+            list-style: none;
+            padding: 0;
+            max-height: 10%;
+            margin: 16%; /* Margem em torno da grade */
+        }
+
+        /* Estilo para cada item de produto */
+        li {
+            display: flex;
+            flex-direction: column; /* Organiza o conteúdo verticalmente */
+            justify-content: space-around; /* Distribui o espaço verticalmente */
+            align-items: center; /* Centraliza horizontalmente */
+            text-align: center; /* Alinha o texto ao centro */
+            overflow: hidden; /* Impede que a imagem ultrapasse o espaço do item */
+            height: 100%; /* Define a altura do item para preencher o espaço da grade */
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); /* Adiciona sombra ao redor do item */
+            transition: 0.3s; /* Efeito de transição suave para a sombra */
+
+        }
+
+        li:hover {
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        }
+
+
+
+        /* Estilo para o título */
+        h3 {
+            font-size: 20px; /* Tamanho da fonte do título */
+            margin-top: auto;
+            margin-bottom: 10px;
+        }
+        h4 {
+            margin-top: 10px;
+            font-size: 23px;
+            margin-bottom: 10px;
+        }
+
+        /* Estilo para as estrelas de avaliação (mantido igual) */
+        .rating {
+            margin-top: 10px;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .rating i {
+            color: #FFD700;
+        }
+
+        .menu-lateral {
+            height: 100vh;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.3s;
+            padding-top: 60px;
+        }
+
+        /* Estilo para os links do menu lateral */
+        .menu-lateral a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        /* Estilo para o botão de fechar (x) */
+        .menu-lateral .fecharbtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        /* Efeito hover para os links */
+        .menu-lateral a:hover {
+            color: #f1f1f1;
+        }
+
+
+
+    </style>
+    <!-- Inclua a biblioteca Font Awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+<body>
+<h1>Fake Store API</h1>
+<!-- Menu Lateral -->
+<div id="menuLateral" class="menu-lateral">
+    <a href="javascript:void(0)" class="fecharbtn" onclick="fecharMenu()">&times;</a>
+    <a href="/show">Todos os Itens</a>
+    <a href="/show/electronics">Electronics</a>
+    <a href="/show/jewelery">Jewelery</a>
+    <a href="/show/men">Men's Clothing</a>
+    <a href="/show/women">Women's Clothing</a>
+</div>
+
+<div id="menuIcon" style="font-size:30px;cursor:pointer;position:absolute;top:100px;transition:0.0s;">
+    <span onclick="abrirMenu()">&#9776; Menu</span>
+</div>
+
+<ul>
+    <li th:each="produto : ${produtos}" th:onclick="'redirectToProductPage(' + ${produto.id} + ')'">
+        <img th:src="${produto.image}" alt="Imagem do Produto" th:title="${produto.description}">
+        <h3 th:text="${produto.title}"></h3>
+        <h4 th:text="${'R$: ' + #numbers.formatDecimal(produto.price, 2, 'POINT', 2, 'COMMA')}"></h4>
+        <div class="rating">
+            <i th:each="star:${#numbers.sequence(1, produto.rating.rate)}" class="fa fa-star"></i>
+            <i th:each="star:${#numbers.sequence(produto.rating.rate + 1, 5)}" class="fa fa-star-o"></i>
+            <span th:text="${produto.rating.count + ' avaliações'}"></span>
+        </div>
+    </li>
+</ul>
+<script>
+    function abrirMenu() {
+        document.getElementById("menuLateral").style.width = "250px";
+    }
+
+    function fecharMenu() {
+        document.getElementById("menuLateral").style.width = "0";
+    }
+
+    function redirectToProductPage(productId) {
+        // Redirecionar para a página do produto com o ID correspondente
+        console.log('Redirecionando para /showOne/' + productId);
+        window.location.href = '/showOne/' + productId;
+    }
+
+    window.onscroll = function() {
+        var menuIcon = document.getElementById("menuIcon");
+        if (window.pageYOffset > 100) {
+            menuIcon.style.position = "fixed";
+            menuIcon.style.top = "10px";
+        } else {
+            menuIcon.style.position = "absolute";
+            menuIcon.style.top = "100px";
+        }
+    }
+</script>
+</body>
+</html>
